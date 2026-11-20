@@ -1,0 +1,32 @@
+{
+  "id": "FLOW_REMOTE_HTTP",
+  "type": "flow",
+  "name": "远程调度流程",
+  "params": [
+    { "name": "id", "type": "String" }
+  ],
+  "results": [
+    { "name": "name", "type": "String" },
+    { "name": "status", "type": "String" }
+  ],
+  "nodes": [
+    {
+      "id": "FLOW_REMOTE_HTTP_NODE",
+      "type": "http",
+      "name": "远程HTTP调度",
+      "method": "GET",
+      "reference": "http://localhost:10102/api/auto/model/single",
+      "params": [
+        { "name": "id", "type": "String" }
+      ],
+      "results": [
+        { "name": "name", "type": "String", "parse": "data.value.name" },
+        { "name": "status", "type": "String", "parse": "data.value.status" }
+      ]
+    }
+  ],
+  "routes": [
+    { "source":"start", "target": "FLOW_REMOTE_HTTP_NODE" },
+    { "source":"FLOW_REMOTE_HTTP_NODE", "target": "end" }
+  ]
+}

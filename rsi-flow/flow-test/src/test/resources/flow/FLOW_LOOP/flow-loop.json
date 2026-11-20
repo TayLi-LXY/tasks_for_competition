@@ -1,0 +1,50 @@
+{
+  "id": "FLOW_LOOP",
+  "type": "flow",
+  "name": "循环结构：累加求和 1..N",
+  "params": [
+    { "name": "times", "type": "Integer" }
+  ],
+  "results": [
+    { "name": "sum", "type": "Integer" },
+    { "name": "i", "type": "Integer" }
+  ],
+  "nodes": [
+    {
+      "id": "FLOW_LOOP_INIT",
+      "type": "event",
+      "name": "循环初始化",
+      "reference": "FLOW_LOOP_INIT",
+      "params": [
+        { "name": "times", "type": "Integer" }
+      ],
+      "results": [
+        { "name": "i", "type": "Integer" },
+        { "name": "sum", "type": "Integer" },
+        { "name": "times", "type": "Integer" }
+      ]
+    },
+    {
+      "id": "FLOW_LOOP_BODY",
+      "type": "event",
+      "name": "循环体：i++ 且 sum+=i",
+      "reference": "FLOW_LOOP_BODY",
+      "params": [
+        { "name": "i", "type": "Integer" },
+        { "name": "sum", "type": "Integer" },
+        { "name": "times", "type": "Integer" }
+      ],
+      "results": [
+        { "name": "i", "type": "Integer" },
+        { "name": "sum", "type": "Integer" },
+        { "name": "times", "type": "Integer" }
+      ]
+    }
+  ],
+  "routes": [
+    { "source": "start", "target": "FLOW_LOOP_INIT" },
+    { "source": "FLOW_LOOP_INIT", "target": "FLOW_LOOP_BODY" },
+    { "source": "FLOW_LOOP_BODY", "target": "FLOW_LOOP_BODY", "condition": "i < times" },
+    { "source": "FLOW_LOOP_BODY", "target": "end", "condition": "i >= times" }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "FLOW_SINGLE_NODE",
+  "type": "flow",
+  "name": "简单流程标准",
+  "params": [
+    { "name": "value", "type": "String" }
+  ],
+  "results": [
+    { "name": "addBlankValue", "type": "String" }
+  ],
+  "nodes": [
+    {
+      "id": "FLOW_SIMPLE_ADD_BLANK",
+      "type": "event",
+      "name": "添加一个空白格",
+      "reference": "FLOW_SIMPLE_ADD_BLANK",
+      "params": [
+        { "name": "value", "type": "String" }
+      ],
+      "results": [
+        { "name": "addBlankValue", "type": "String" }
+      ]
+    }
+  ],
+  "routes": [
+    { "source":"start", "target": "FLOW_SIMPLE_ADD_BLANK" },
+    { "source":"FLOW_SIMPLE_ADD_BLANK", "target": "end" }
+  ]
+}

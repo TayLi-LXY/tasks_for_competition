@@ -1,0 +1,24 @@
+# 不上传口播稿
+视频口播稿.md
+
+# 依赖与构建产物
+**/node_modules/
+**/dist/
+**/deploy/
+**/.cache/
+**/target/
+**/*.class
+**/.parcel-cache/
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# 本地日志与临时
+*.log
+*.tmp
+npm-debug.log*
+yarn-error.log*

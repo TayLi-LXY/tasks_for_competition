@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>flow</artifactId>
+        <groupId>cc.eamon.open</groupId>
+        <version>0.4.14</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>flow-core</artifactId>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>releases</name>
+            <url>http://central.horsecoder.com:8081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>snapshots</name>
+            <url>http://central.horsecoder.com:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>releases</id>
+            <name>releases</name>
+            <url>http://central.horsecoder.com:8081/repository/maven-releases/</url>
+        </repository>
+    </repositories>
+    
+    <dependencies>
+
+        <dependency>
+            <groupId>cc.eamon.open</groupId>
+            <artifactId>flow-remote</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cc.eamon.open</groupId>
+            <artifactId>flow-route</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cc.eamon.open</groupId>
+            <artifactId>flow-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cc.eamon</groupId>
+            <artifactId>easyfile</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <!-- slf4j api -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.edu.whu.zhuyuhan</groupId>
+            <artifactId>scheduler-core</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

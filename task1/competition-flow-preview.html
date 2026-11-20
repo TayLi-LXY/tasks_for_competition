@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>任务1 · 竞赛调研流程可视化</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #fff;
+      --text: #1f2329;
+      --muted: #6b7280;
+      --line: #c5c9d3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      padding: 16px 24px;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    header h1 { margin: 0; font-size: 18px; }
+    header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      background: #f3f4f6;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+    .stage-wrap {
+      overflow: auto;
+      height: calc(100vh - 74px);
+      padding: 24px;
+    }
+    #stage {
+      position: relative;
+      width: 1100px;
+      height: 1040px;
+      margin: 0 auto;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
+      background-size: 25px 25px;
+      background-color: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+    svg.links {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .node {
+      position: absolute;
+      width: 200px;
+      min-height: 64px;
+      padding: 10px 12px;
+      background: var(--card);
+      border: 1px solid #eee;
+      border-radius: 8px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.08);
+      white-space: pre-line;
+      font-size: 13px;
+      line-height: 1.4;
+      cursor: default;
+    }
+    .node .bar {
+      height: 6px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+    .node .title { font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>任务1 · 竞赛调研选型流程</h1>
+      <p>基于 rsi-flow-visual ViewState 的预览页（无需启动 Parcel）</p>
+    </div>
+    <div class="hint">直接双击本文件，或在浏览器打开即可</div>
+  </header>
+  <div class="stage-wrap">
+    <div id="stage"></div>
+  </div>
+  <script>
+    const elements = [
+      { id: 'start', name: '开始', color: '#52c41a', x: 450, y: 20 },
+      { id: 'defineGoal', name: '明确参赛目标\n推免 / 能力 / 简历', color: '#4099ff', x: 400, y: 120 },
+      { id: 'loadRules', name: '读取认定表\n+ 推免计分办法', color: '#4099ff', x: 400, y: 240 },
+      { id: 'filterCollege', name: '过滤学院认可赛事\nⅠ类 / Ⅱ类 A–D', color: '#4099ff', x: 400, y: 360 },
+      { id: 'filterTime', name: '一年时间窗口过滤\n2026-11 ~ 2027-11', color: '#722ed1', x: 400, y: 480 },
+      { id: 'evalClass1', name: 'Ⅰ类高价值\n挑战杯/电设/数模', color: '#fa541c', x: 50, y: 620 },
+      { id: 'evalSystem', name: '系统能力赛道\n系统能力大赛/ASC', color: '#fa8c16', x: 280, y: 620 },
+      { id: 'evalAlgo', name: '程序设计赛道\nICPC/CCPC/蓝桥', color: '#13c2c2', x: 510, y: 620 },
+      { id: 'evalModel', name: '建模与创新\n美赛/服务外包', color: '#eb2f96', x: 740, y: 620 },
+      { id: 'rankOutput', name: '综合成本与获奖预期\n输出主赛+备赛清单', color: '#4099ff', x: 400, y: 780 },
+      { id: 'end', name: '结束', color: '#52c41a', x: 450, y: 900 },
+    ];
+
+    const links = [
+      { from: 'start', to: 'defineGoal', name: 'next', color: '#8c8c8c' },
+      { from: 'defineGoal', to: 'loadRules', name: 'next', color: '#8c8c8c' },
+      { from: 'loadRules', to: 'filterCollege', name: 'next', color: '#8c8c8c' },
+      { from: 'filterCollege', to: 'filterTime', name: 'next', color: '#8c8c8c' },
+      { from: 'filterTime', to: 'evalClass1', name: 'all', color: '#722ed1' },
+      { from: 'filterTime', to: 'evalSystem', name: 'all', color: '#722ed1' },
+      { from: 'filterTime', to: 'evalAlgo', name: 'all', color: '#722ed1' },
+      { from: 'filterTime', to: 'evalModel', name: 'all', color: '#722ed1' },
+      { from: 'evalClass1', to: 'rankOutput', name: 'join', color: '#fa541c' },
+      { from: 'evalSystem', to: 'rankOutput', name: 'join', color: '#fa8c16' },
+      { from: 'evalAlgo', to: 'rankOutput', name: 'join', color: '#13c2c2' },
+      { from: 'evalModel', to: 'rankOutput', name: 'join', color: '#eb2f96' },
+      { from: 'rankOutput', to: 'end', name: 'done', color: '#8c8c8c' },
+    ];
+
+    const stage = document.getElementById('stage');
+    const byId = Object.fromEntries(elements.map((e) => [e.id, e]));
+    const NODE_W = 200;
+    const NODE_H = 70;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.classList.add('links');
+    stage.appendChild(svg);
+
+    function center(el) {
+      return { x: el.x + NODE_W / 2, y: el.y + NODE_H / 2 };
+    }
+
+    links.forEach((link) => {
+      const a = byId[link.from];
+      const b = byId[link.to];
+      const p1 = { x: a.x + NODE_W / 2, y: a.y + NODE_H };
+      const p2 = { x: b.x + NODE_W / 2, y: b.y };
+      const midY = (p1.y + p2.y) / 2;
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', `M ${p1.x} ${p1.y} C ${p1.x} ${midY}, ${p2.x} ${midY}, ${p2.x} ${p2.y}`);
+      path.setAttribute('stroke', link.color);
+      path.setAttribute('stroke-width', '2');
+      path.setAttribute('fill', 'none');
+      path.setAttribute('marker-end', 'url(#arrow)');
+      svg.appendChild(path);
+
+      const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      label.setAttribute('x', (p1.x + p2.x) / 2 + 8);
+      label.setAttribute('y', midY);
+      label.setAttribute('fill', link.color);
+      label.setAttribute('font-size', '11');
+      label.textContent = link.name;
+      svg.appendChild(label);
+    });
+
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    defs.innerHTML = `
+      <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <path d="M0,0 L8,3 L0,6 Z" fill="#8c8c8c" />
+      </marker>
+    `;
+    svg.appendChild(defs);
+
+    elements.forEach((el) => {
+      const node = document.createElement('div');
+      node.className = 'node';
+      node.style.left = el.x + 'px';
+      node.style.top = el.y + 'px';
+      node.innerHTML = `<div class="bar" style="background:${el.color}"></div><div class="title">${el.name}</div>`;
+      stage.appendChild(node);
+    });
+  </script>
+</body>
+</html>

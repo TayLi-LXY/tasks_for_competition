@@ -1,0 +1,13 @@
+{
+  "routes": [
+    { "source":"start", "target": "疑似高血压", "condition": "$sbp>=140||$dbp>=90"},
+    { "source":"start", "target": "无高血压", "condition": "default" },
+    { "source":"疑似高血压", "target": "疑似轻度高血压", "condition": "((140<=$sbp)&&($sbp<=159))||((90<=$dbp)&&($dbp<=99))" },
+    { "source":"疑似高血压", "target": "疑似中度高血压", "condition": "((160<=$sbp)&&($sbp<=179))||((100<=$dbp)&&($dbp<=109))" },
+    { "source":"疑似高血压", "target": "疑似重度高血压", "condition": "$sbp>=180||$dbp>=110" },
+    { "source":"疑似轻度高血压", "target": "end", "condition": "true" },
+    { "source":"疑似中度高血压", "target": "end", "condition": "true" },
+    { "source":"疑似重度高血压", "target": "end", "condition": "true" },
+    { "source":"无高血压", "target": "end", "condition": "true" }
+  ]
+}

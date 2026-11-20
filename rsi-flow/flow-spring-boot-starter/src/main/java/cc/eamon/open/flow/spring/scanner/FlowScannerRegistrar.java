@@ -1,0 +1,40 @@
+package cc.eamon.open.flow.spring.scanner;
+
+
+import cc.eamon.open.flow.spring.context.pipeline.SpringComponentPipeline;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.type.AnnotationMetadata;
+
+/**
+ * Author: lucas
+ * Email: lucas@eamon.cc
+ * Date: 2020/8/11 10:52
+ */
+public class FlowScannerRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware {
+
+    private ResourceLoader resourceLoader;
+
+    @Override
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
+
+
+    /**
+     * 注册Bean
+     *
+     * @param importingClassMetadata
+     * @param registry
+     */
+    @Override
+    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+        //获取注解的属性
+        AnnotationAttributes annoAttrs = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(FlowScan.class.getName()));
+        SpringComponentPipeline.initPath(annoAttrs.getStringArray("flowPackages"));
+
+    }
+}

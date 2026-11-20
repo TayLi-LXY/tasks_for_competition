@@ -1,0 +1,113 @@
+{
+  "id": "FLOW_COMPETITION_RESEARCH",
+  "type": "flow",
+  "name": "一年内竞赛调研选型流程",
+  "params": [
+    { "name": "goal", "type": "String" }
+  ],
+  "results": [
+    { "name": "primaryCompetitions", "type": "String" },
+    { "name": "backupCompetitions", "type": "String" }
+  ],
+  "nodes": [
+    {
+      "id": "DEFINE_GOAL",
+      "type": "event",
+      "name": "明确参赛目标",
+      "reference": "COMP_DEFINE_GOAL",
+      "params": [{ "name": "goal", "type": "String" }],
+      "results": [{ "name": "goalType", "type": "String" }]
+    },
+    {
+      "id": "LOAD_RULES",
+      "type": "event",
+      "name": "读取认定表与推免计分办法",
+      "reference": "COMP_LOAD_RULES",
+      "params": [],
+      "results": [{ "name": "rulesReady", "type": "Integer" }]
+    },
+    {
+      "id": "FILTER_COLLEGE",
+      "type": "event",
+      "name": "过滤学院认可赛事",
+      "reference": "COMP_FILTER_COLLEGE",
+      "params": [{ "name": "goalType", "type": "String" }],
+      "results": [{ "name": "candidatePool", "type": "String" }]
+    },
+    {
+      "id": "FILTER_TIME",
+      "type": "event",
+      "name": "一年时间窗口过滤",
+      "reference": "COMP_FILTER_TIME",
+      "params": [{ "name": "candidatePool", "type": "String" }],
+      "results": [{ "name": "timeWindowPool", "type": "String" }]
+    },
+    {
+      "id": "EVAL_CLASS1",
+      "type": "event",
+      "name": "评估Ⅰ类高价值赛",
+      "reference": "COMP_EVAL_CLASS1",
+      "params": [{ "name": "timeWindowPool", "type": "String" }],
+      "results": [{ "name": "class1Pick", "type": "String" }]
+    },
+    {
+      "id": "EVAL_SYSTEM",
+      "type": "event",
+      "name": "评估系统能力赛道",
+      "reference": "COMP_EVAL_SYSTEM",
+      "params": [{ "name": "timeWindowPool", "type": "String" }],
+      "results": [{ "name": "systemPick", "type": "String" }]
+    },
+    {
+      "id": "EVAL_ALGO",
+      "type": "event",
+      "name": "评估程序设计赛道",
+      "reference": "COMP_EVAL_ALGO",
+      "params": [{ "name": "timeWindowPool", "type": "String" }],
+      "results": [{ "name": "algoPick", "type": "String" }]
+    },
+    {
+      "id": "EVAL_MODEL",
+      "type": "event",
+      "name": "评估建模与创新赛道",
+      "reference": "COMP_EVAL_MODEL",
+      "params": [{ "name": "timeWindowPool", "type": "String" }],
+      "results": [{ "name": "modelPick", "type": "String" }]
+    },
+    {
+      "id": "RANK_OUTPUT",
+      "type": "event",
+      "name": "综合排序并输出清单",
+      "reference": "COMP_RANK_OUTPUT",
+      "params": [
+        { "name": "class1Pick", "type": "String" },
+        { "name": "systemPick", "type": "String" },
+        { "name": "algoPick", "type": "String" },
+        { "name": "modelPick", "type": "String" }
+      ],
+      "results": [
+        { "name": "primaryCompetitions", "type": "String" },
+        { "name": "backupCompetitions", "type": "String" }
+      ]
+    }
+  ],
+  "routes": [
+    { "source": "start", "target": "DEFINE_GOAL" },
+    { "source": "DEFINE_GOAL", "target": "LOAD_RULES" },
+    { "source": "LOAD_RULES", "target": "FILTER_COLLEGE" },
+    { "source": "FILTER_COLLEGE", "target": "FILTER_TIME" },
+    { "source": "FILTER_TIME", "target": "EVAL_CLASS1" },
+    { "source": "FILTER_TIME", "target": "EVAL_SYSTEM" },
+    { "source": "FILTER_TIME", "target": "EVAL_ALGO" },
+    { "source": "FILTER_TIME", "target": "EVAL_MODEL" },
+    { "source": "EVAL_CLASS1", "target": "RANK_OUTPUT" },
+    { "source": "EVAL_SYSTEM", "target": "RANK_OUTPUT" },
+    { "source": "EVAL_ALGO", "target": "RANK_OUTPUT" },
+    { "source": "EVAL_MODEL", "target": "RANK_OUTPUT" },
+    { "source": "RANK_OUTPUT", "target": "end" }
+  ],
+  "strategies": [
+    { "source": "FILTER_TIME", "strategy": "all" },
+    { "target": "RANK_OUTPUT", "strategy": "close" }
+  ]
+}
