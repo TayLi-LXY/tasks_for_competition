@@ -1,0 +1,31 @@
+{
+  "id": "FLOW_LOOP_FOR_BODY",
+  "type": "flow",
+  "name": "for 循环体：拼接 item",
+  "params": [
+    { "name": "item", "type": "String" },
+    { "name": "joined", "type": "String" }
+  ],
+  "results": [
+    { "name": "joined", "type": "String" }
+  ],
+  "nodes": [
+    {
+      "id": "FLOW_LOOP_FOR_BODY_EVENT",
+      "type": "event",
+      "name": "拼接当前 item",
+      "reference": "FLOW_LOOP_FOR_BODY_EVENT",
+      "params": [
+        { "name": "item", "type": "String" },
+        { "name": "joined", "type": "String" }
+      ],
+      "results": [
+        { "name": "joined", "type": "String" }
+      ]
+    }
+  ],
+  "routes": [
+    { "source": "start", "target": "FLOW_LOOP_FOR_BODY_EVENT" },
+    { "source": "FLOW_LOOP_FOR_BODY_EVENT", "target": "end" }
+  ]
+}

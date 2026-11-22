@@ -1,0 +1,126 @@
+{
+  "window": "2026-11~2027-11",
+  "source": [
+    "武汉大学本科生学科竞赛认定信息表（2026年）",
+    "2027届计算机学院免试攻读硕士学位研究生综合成绩计分办法"
+  ],
+  "items": [
+    {
+      "id": "challenge",
+      "name": "挑战杯大挑",
+      "track": "class1",
+      "classLevel": "I",
+      "window": "2026-12~2027-11",
+      "score": 100,
+      "note": "2027奇数年办大挑，校内申报约12月"
+    },
+    {
+      "id": "nuedc",
+      "name": "全国大学生电子设计竞赛",
+      "track": "class1",
+      "classLevel": "I",
+      "window": "2027-03~2027-09",
+      "score": 95,
+      "note": "奇数年国赛"
+    },
+    {
+      "id": "mcm_cn",
+      "name": "全国大学生数学建模竞赛",
+      "track": "class1",
+      "classLevel": "I",
+      "window": "2027-09",
+      "score": 90,
+      "note": "约9月中旬"
+    },
+    {
+      "id": "syscap",
+      "name": "全国大学生计算机系统能力大赛",
+      "track": "system",
+      "classLevel": "II-A",
+      "window": "2027-03~2027-06",
+      "score": 88,
+      "note": "CPU/OS/编译/数据库等赛道"
+    },
+    {
+      "id": "asc",
+      "name": "ASC世界大学生超算竞赛",
+      "track": "system",
+      "classLevel": "II-A",
+      "window": "2027-03~2027-05",
+      "score": 85,
+      "note": "决赛冠/银/专项按国一/二/三"
+    },
+    {
+      "id": "icpc",
+      "name": "ICPC东亚区域赛",
+      "track": "algo",
+      "classLevel": "II-B",
+      "window": "2026-11~2027-01;2027-09~2027-11",
+      "score": 82,
+      "note": "冲 WF 可升 II-A"
+    },
+    {
+      "id": "ccpc",
+      "name": "CCPC区域赛",
+      "track": "algo",
+      "classLevel": "II-D",
+      "window": "2026-11~2027-01;2027-09~2027-11",
+      "score": 70,
+      "note": "区域邀请赛按省级计"
+    },
+    {
+      "id": "lanqiao",
+      "name": "蓝桥杯",
+      "track": "algo",
+      "classLevel": "II-D",
+      "window": "2026-12~2027-06",
+      "score": 55,
+      "note": "2023级：国奖按省奖计"
+    },
+    {
+      "id": "mcm_us",
+      "name": "美赛MCM/ICM",
+      "track": "model",
+      "classLevel": "国家级",
+      "window": "2027-01~2027-02",
+      "score": 78,
+      "note": "O/F/M 对应一/二/三等"
+    },
+    {
+      "id": "service",
+      "name": "中国大学生服务外包创新创业大赛",
+      "track": "model",
+      "classLevel": "II-C",
+      "window": "2027-03~2027-06",
+      "score": 65,
+      "note": "国奖按省奖计"
+    },
+    {
+      "id": "design",
+      "name": "中国大学生计算机设计大赛",
+      "track": "model",
+      "classLevel": "II-C",
+      "window": "2027-09~2027-11",
+      "score": 62,
+      "note": "校→中南→全国"
+    },
+    {
+      "id": "iot",
+      "name": "全国大学生物联网设计竞赛",
+      "track": "model",
+      "classLevel": "II-C",
+      "window": "2027-04~2027-07",
+      "score": 60,
+      "note": "学院认可"
+    },
+    {
+      "id": "chinasoft",
+      "name": "中国软件杯/软件创新大赛",
+      "track": "system",
+      "classLevel": "II-B",
+      "window": "2027-03~2027-08",
+      "score": 72,
+      "note": "工程向备选"
+    }
+  ]
+}

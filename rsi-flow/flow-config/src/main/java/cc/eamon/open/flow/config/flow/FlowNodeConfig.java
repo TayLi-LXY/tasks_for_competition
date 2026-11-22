@@ -83,6 +83,42 @@ public class FlowNodeConfig implements Serializable {
     @JSONField(ordinal = 11)
     private List<ImportConfig> contentImports;
 
+    /**
+     * 循环模式：for / while / do-while（仅 type=loop）
+     */
+    @JSONField(ordinal = 12)
+    private String loopMode;
+
+    /**
+     * 最大迭代次数，必须 > 0（仅 type=loop）
+     */
+    @JSONField(ordinal = 13)
+    private Integer maxIterations;
+
+    /**
+     * 循环条件（Jexl，while / do-while 使用）
+     */
+    @JSONField(ordinal = 14)
+    private String condition;
+
+    /**
+     * 迭代出错策略：throw / break / continue（仅 type=loop）
+     */
+    @JSONField(ordinal = 15)
+    private String onError;
+
+    /**
+     * 可选墙钟超时（毫秒，仅 type=loop）
+     */
+    @JSONField(ordinal = 16)
+    private Long timeoutMs;
+
+    /**
+     * for 模式迭代集合在上下文中的变量名（仅 type=loop）
+     */
+    @JSONField(ordinal = 17)
+    private String iterationKey;
+
 
     public String getId() {
         return id;
@@ -170,5 +206,53 @@ public class FlowNodeConfig implements Serializable {
 
     public void setContentImports(List<ImportConfig> contentImports) {
         this.contentImports = contentImports;
+    }
+
+    public String getLoopMode() {
+        return loopMode;
+    }
+
+    public void setLoopMode(String loopMode) {
+        this.loopMode = loopMode;
+    }
+
+    public Integer getMaxIterations() {
+        return maxIterations;
+    }
+
+    public void setMaxIterations(Integer maxIterations) {
+        this.maxIterations = maxIterations;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
+
+    public String getOnError() {
+        return onError;
+    }
+
+    public void setOnError(String onError) {
+        this.onError = onError;
+    }
+
+    public Long getTimeoutMs() {
+        return timeoutMs;
+    }
+
+    public void setTimeoutMs(Long timeoutMs) {
+        this.timeoutMs = timeoutMs;
+    }
+
+    public String getIterationKey() {
+        return iterationKey;
+    }
+
+    public void setIterationKey(String iterationKey) {
+        this.iterationKey = iterationKey;
     }
 }

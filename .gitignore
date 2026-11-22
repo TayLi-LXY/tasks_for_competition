@@ -22,3 +22,7 @@ Thumbs.db
 *.tmp
 npm-debug.log*
 yarn-error.log*
+scripts/_smoke*.json
+.env
+.env.*
+!.env.example

@@ -13,6 +13,7 @@
             <class name="cc.eamon.open.flow.FLOW_ASYNC_VOID.FlowAsyncVoidTest"/>
             <class name="cc.eamon.open.flow.FLOW_MODEL.FlowModelTest"/>
             <class name="cc.eamon.open.flow.FLOW_LOOP.FlowLoopTest"/>
+            <class name="cc.eamon.open.flow.FLOW_COMPETITION_RESEARCH.FlowCompetitionResearchTest"/>
         </classes>
     </test>
 

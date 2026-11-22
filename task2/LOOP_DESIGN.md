@@ -11,95 +11,88 @@
 | 嵌套 | `type: "flow"` + `reference` 子流程 |
 | 并行 | `strategies: all / any / close / async` |
 
-缺少：**循环**（同一子图按条件反复执行）。
-
-核心执行器 `Executor` 用队列驱动节点，**没有“已访问节点不可再入”限制**，因此回边在运行时是可行的。
+缺少：**循环**（同一子图按条件/集合反复执行）。
 
 ## 2. 方案对比
 
-### 方案 A：条件回边（While 语义，推荐先落地）
+### 方案 A：条件回边（While 语义）
 
-用现有 `condition` 构造回边，零侵入引擎：
+用现有 `condition` 构造自环，零侵入引擎。  
+优点：实现快。缺点：语义散落、无统一 `maxIterations`。
 
-```
-start → INIT → BODY ──[i < times]──► BODY
-                 └──[i >= times]──► end
-```
+### 方案 B：复合 loop 节点（本次落地）
 
-优点：与条件分支一致、实现快、可测。  
-缺点：循环语义散落在多条 route；缺统一 max-iteration 保护。
+新增节点类型 `type: "loop"`，`reference` 指向循环体子流程，配置：
 
-### 方案 B：专用 loop 策略（后续增强）
-
-新增 `strategies: [{ "source":"LOOP_HEAD", "strategy":"loop" }]`，配置：
-
-```json
-{
-  "source": "LOOP_HEAD",
-  "strategy": "loop",
-  "condition": "i < times",
-  "body": "LOOP_BODY",
-  "maxIterations": 10000
-}
-```
-
-引擎侧增加 `LoopSourceStrategy` + `LoopExecutor`：在策略内反复调度 body，超限抛错。  
-优点：语义清晰、易做可视化。  
-缺点：改动面大，需讨论后合入。
-
-### 方案 C：嵌套子流程 + 外部 while
-
-把 body 做成子 flow，外层 Java/`@Flow` 里 while 调用 `FlowEngine.run(subFlow)`。  
-优点：不改路由。  
-缺点：循环不在流程 JSON 内，可视化丢失。
-
-## 3. 本次实现：方案 A
-
-落地示例流程 `FLOW_LOOP`：计算 `sum = 1 + 2 + … + times`。
-
-```
-start → FLOW_LOOP_INIT → FLOW_LOOP_BODY ──[i < times]──► FLOW_LOOP_BODY
-                              └──[i >= times]──► end
-```
-
-| 节点 | 作用 |
+| 字段 | 说明 |
 |------|------|
-| `FLOW_LOOP_INIT` | `i=0, sum=0` |
-| `FLOW_LOOP_BODY` | `i++, sum+=i` |
+| `loopMode` | `for` / `while` / `do-while` |
+| `maxIterations` | **必须 > 0**，缺省或非法立即报错 |
+| `condition` | while / do-while 的 Jexl 条件 |
+| `onError` | `throw` / `break` / `continue` |
+| `timeoutMs` | 可选墙钟超时（毫秒） |
+| `iterationKey` | for 模式：上下文中的集合变量名 |
 
-约束（讨论结论）：
+执行生命周期：`bindParams → execute(body)×N → bindResults`。  
+状态写入作用域 `loop:{nodeId}`（mode / iteration / status）。
 
-1. 继续/退出条件必须互斥且可终止。
-2. 循环变量必须作为节点 `results` 写出，才能进入路由变量表。
-3. 建议业务层保证 `times` 有上界；方案 B 再补引擎级 `maxIterations`。
+### 方案 C：外层 Java while 调子流程
 
-## 4. 与可视化的对应
+循环不在流程 JSON 内，可视化丢失，不采用。
 
-在 `rsi-flow-visual` 中，循环回边用带条件名的 `branch` 链接表示（`continue` / `exit`），与分支共用连线类型，靠条件文案区分。
+## 3. 本次实现：方案 B
 
-## 5. 讨论点（待课上确认）
+改动分层：
 
-1. 是否需要方案 B 的一等公民 `loop` 策略？
-2. 是否支持 for-each（对 List 迭代）——可在方案 A 上用索引模拟，或方案 B 扩展 `iterator`。
-3. 嵌套循环：方案 A 自然支持多层回边；方案 B 需处理策略嵌套。
+| 层 | 改动 |
+|----|------|
+| 配置 | `FlowNodeConfig` 增加 6 个 loop 字段 |
+| 注册 | `ExecutableEnums.LOOP("loop", LoopExecutable.class)` |
+| 执行 | 新建 `LoopExecutable` |
+| 测试 | 5 个示例流程 + 3 个用例 |
 
-## 6. 文件清单
+示例流程：
+
+```
+FLOW_LOOP_WHILE     INIT → loop(while)  → end     reference: FLOW_LOOP_BODY
+FLOW_LOOP_DO_WHILE  INIT → loop(do-while) → end   reference: FLOW_LOOP_BODY
+FLOW_LOOP_FOR       INIT → loop(for)    → end     reference: FLOW_LOOP_FOR_BODY
+FLOW_LOOP_BODY      累加体 i++; sum+=i
+FLOW_LOOP_FOR_BODY  拼接体 joined += item
+```
+
+约束：
+
+1. `maxIterations` 强制必填且 > 0。
+2. while / do-while 必须提供可终止的 `condition`。
+3. for 必须提供 `iterationKey`，支持 List / 数组 / 字符串字符迭代。
+4. 循环变量经节点 `results` 写回，才能进入下一轮绑定与条件求值。
+
+## 4. 文件清单
 
 | 路径 | 说明 |
 |------|------|
-| `rsi-flow/.../FLOW_LOOP/flow-loop.json` | 循环流程配置 |
-| `rsi-flow/.../code/FlowLoopCode.java` | INIT / BODY 节点代码 |
-| `rsi-flow/.../FLOW_LOOP/FlowLoopTest.java` | 单元测试 |
-| `task2/loop-viewstate.md` | 循环结构示意 |
+| `flow-config/.../FlowNodeConfig.java` | loop 配置字段 |
+| `flow-core/.../LoopExecutable.java` | 循环执行器 |
+| `flow-core/.../ExecutableEnums.java` | 注册 `loop` |
+| `flow-core/.../FlowLoopException.java` | 循环异常 |
+| `flow-test/.../FLOW_LOOP_*/` | 5 个示例流程 JSON |
+| `flow-test/.../FlowLoopCode.java` | INIT / BODY 节点代码 |
+| `flow-test/.../FlowLoopTest.java` | 单元测试 |
+| `task2/loop-viewstate.md` | 结构示意 |
 
-## 7. 验证结果
+## 5. 验证
 
 ```text
 Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
-- caseLoopSumToThree  → sum=6
-- caseLoopSumToTen    → sum=55
-- caseLoopOnce        → sum=1
+- caseWhileSumToThree  → sum=6
+- caseDoWhileOnce      → sum=1
+- caseForJoinItems     → joined=abc
 BUILD SUCCESS
 ```
 
-日志可见 `FLOW_LOOP_BODY` 按条件反复执行（times=10 时 body 执行 10 次），回边生效。
+## 6. 讨论点
+
+1. 可视化是否为 loop 单独提供节点样式（vs 普通 flow 嵌套）。
+2. for-each 当前元素固定写入 `item` / `index`，是否需可配置。
+3. 嵌套 loop：复合节点天然支持，状态域按 `loop:{nodeId}` 隔离。

@@ -4,6 +4,7 @@ import cc.eamon.open.flow.core.error.FlowTypeNotSupportException;
 import cc.eamon.open.flow.core.stereotype.support.execute.EventExecutable;
 import cc.eamon.open.flow.core.stereotype.execute.Executable;
 import cc.eamon.open.flow.core.stereotype.execute.FlowExecutable;
+import cc.eamon.open.flow.core.stereotype.execute.LoopExecutable;
 import cc.eamon.open.flow.core.stereotype.support.execute.HttpExecutable;
 
 /**
@@ -17,6 +18,11 @@ public enum ExecutableEnums {
      * 流程执行项
      */
     FLOW("flow", FlowExecutable.class),
+
+    /**
+     * 循环复合节点
+     */
+    LOOP("loop", LoopExecutable.class),
 
     /**
      * 事件执行项

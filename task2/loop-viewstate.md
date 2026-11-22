@@ -1,4 +1,6 @@
-# 循环结构可视化示意
+# 循环结构可视化示意（复合 loop 节点）
+
+## while / do-while
 
 ```
 ┌─────────┐
@@ -6,29 +8,44 @@
 └────┬────┘
      ▼
 ┌─────────────────┐
-│ FLOW_LOOP_INIT  │  i=0, sum=0
+│     INIT        │  i=0, sum=0
 └────────┬────────┘
          ▼
-┌─────────────────┐ ◄──────────────┐
-│ FLOW_LOOP_BODY  │  i++; sum+=i   │
-└────────┬────────┘                │
-         │                         │
-    ┌────┴────┐                    │
-    │         │                    │
- i<times   i>=times                │
-    │         │                    │
-    └────►────┘                    │
-    continue              exit     │
-    └──────────────────────────────┘
-              ▼
-           ┌─────┐
-           │ end │  输出 sum
-           └─────┘
+┌─────────────────────────────────────┐
+│  type: loop                         │
+│  loopMode: while | do-while         │
+│  condition: i < times               │
+│  maxIterations: 10000               │
+│  reference: FLOW_LOOP_BODY ─────────┼──► BODY: i++; sum+=i
+└────────┬────────────────────────────┘
+         ▼
+      ┌─────┐
+      │ end │  输出 sum
+      └─────┘
 ```
 
-对应 JSON 回边：
+## for
 
-```json
-{ "source": "FLOW_LOOP_BODY", "target": "FLOW_LOOP_BODY", "condition": "i < times" },
-{ "source": "FLOW_LOOP_BODY", "target": "end", "condition": "i >= times" }
 ```
+┌─────────┐
+│  start  │
+└────┬────┘
+     ▼
+┌─────────────────┐
+│     INIT        │  joined=""
+└────────┬────────┘
+         ▼
+┌─────────────────────────────────────┐
+│  type: loop                         │
+│  loopMode: for                      │
+│  iterationKey: items                │
+│  maxIterations: 10000               │
+│  reference: FLOW_LOOP_FOR_BODY ─────┼──► BODY: joined += item
+└────────┬────────────────────────────┘
+         ▼
+      ┌─────┐
+      │ end │  输出 joined
+      └─────┘
+```
+
+状态作用域：`loop:{nodeId}`（mode / iteration / status）

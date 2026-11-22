@@ -1,0 +1,48 @@
+{
+  "id": "FLOW_LOOP_FOR",
+  "type": "flow",
+  "name": "for 循环：遍历 items 拼接",
+  "params": [
+    { "name": "items", "type": "List" }
+  ],
+  "results": [
+    { "name": "joined", "type": "String" }
+  ],
+  "nodes": [
+    {
+      "id": "FLOW_LOOP_FOR_INIT",
+      "type": "event",
+      "name": "初始化 joined",
+      "reference": "FLOW_LOOP_FOR_INIT",
+      "params": [
+        { "name": "items", "type": "List" }
+      ],
+      "results": [
+        { "name": "joined", "type": "String" },
+        { "name": "items", "type": "List" }
+      ]
+    },
+    {
+      "id": "FLOW_LOOP_FOR_NODE",
+      "type": "loop",
+      "name": "for each item in items",
+      "reference": "FLOW_LOOP_FOR_BODY",
+      "loopMode": "for",
+      "iterationKey": "items",
+      "maxIterations": 10000,
+      "onError": "throw",
+      "params": [
+        { "name": "item", "type": "String", "notnull": false },
+        { "name": "joined", "type": "String" }
+      ],
+      "results": [
+        { "name": "joined", "type": "String" }
+      ]
+    }
+  ],
+  "routes": [
+    { "source": "start", "target": "FLOW_LOOP_FOR_INIT" },
+    { "source": "FLOW_LOOP_FOR_INIT", "target": "FLOW_LOOP_FOR_NODE" },
+    { "source": "FLOW_LOOP_FOR_NODE", "target": "end" }
+  ]
+}

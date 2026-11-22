@@ -4,22 +4,49 @@
 
 ## 任务1：竞赛调研流程（满分 5）
 
-在 `rsi-flow-visual` 上设计「一年内适合参赛」的第一条流程，并结合认定表 + 推免计分办法完成调研。
+在 `rsi-flow-visual` 上设计「一年内适合参赛」的第一条流程，并结合认定表 + 推免计分办法完成调研；流程已接到 `rsi-flow` 可执行。
 
 | 内容 | 路径 |
 |------|------|
 | 说明与流程设计 | `task1/README.md` |
 | 推荐赛清单 | `task1/recommended-competitions.md` |
-| rsi-flow 流程 JSON | `task1/competition-research-flow.json` |
+| 流程 JSON | `task1/competition-research-flow.json` |
 | 可视化 ViewState | `rsi-flow-visual/demo/test/TEST_COMPETITION_RESEARCH/` |
+| 可执行节点 | `rsi-flow/.../code/FlowCompetitionCode.java` |
+| 引擎单测 | `rsi-flow/.../FLOW_COMPETITION_RESEARCH/FlowCompetitionResearchTest.java` |
 
-查看可视化：
+官方画布（需 Node 18）：
 
 ```bash
+scoop reset versions/nodejs18
 cd rsi-flow-visual
-yarn install
-yarn start
+npm install --ignore-scripts
+npx parcel demo/index.html --out-dir deploy --port 1234
+# 打开 http://localhost:1234
 ```
+
+真正跑出主赛/备赛（推荐整条链路）：
+
+```powershell
+# 终端1：引擎 API
+.\scripts\start-competition-api.ps1
+
+# 终端2：官方画布 + 右侧结构化画像表单（Node 18）
+scoop reset versions/nodejs18
+cd rsi-flow-visual
+npx parcel demo/index.html --out-dir deploy --port 1234
+# 打开 http://localhost:1234 填年级/动机/技能/投入后运行
+```
+
+CLI / 单测：
+
+```powershell
+.\scripts\run-competition-cli.ps1
+cd rsi-flow
+mvn -pl flow-test -am test "-Dtest=FlowCompetitionResearchTest" "-Djacoco.skip=true" "-Dsurefire.failIfNoSpecifiedTests=false"
+```
+
+赛历：`competition/catalog.json`。链路：规则保底 + LLM 可调整（WHU DeepSeek）。
 
 > `rsi-flow-react` 仓库当前 404，不可用；可视化基于 `rsi-flow-visual`。
 
@@ -29,13 +56,14 @@ yarn start
 |------|------|
 | 方案设计（供讨论） | `task2/LOOP_DESIGN.md` |
 | 循环示意 | `task2/loop-viewstate.md` |
-| 流程配置 | `rsi-flow/flow-test/src/test/resources/flow/FLOW_LOOP/flow-loop.json` |
+| 执行器 | `rsi-flow/flow-core/.../LoopExecutable.java` |
+| 示例流程 | `FLOW_LOOP_WHILE` / `FLOW_LOOP_DO_WHILE` / `FLOW_LOOP_FOR` + BODY |
 | 节点代码 | `rsi-flow/flow-test/src/test/java/cc/eamon/open/flow/code/FlowLoopCode.java` |
 | 单元测试 | `rsi-flow/flow-test/src/test/java/cc/eamon/open/flow/FLOW_LOOP/FlowLoopTest.java` |
 
-实现方式：条件回边 While（`i < times` 回 BODY，`i >= times` 出循环）。
+实现方式：复合节点 `type: "loop"`（for / while / do-while），强制 `maxIterations`，状态写入 `loop:{nodeId}`。
 
-验证（已跑通，3/3 通过）：
+验证：
 
 ```bash
 cd rsi-flow

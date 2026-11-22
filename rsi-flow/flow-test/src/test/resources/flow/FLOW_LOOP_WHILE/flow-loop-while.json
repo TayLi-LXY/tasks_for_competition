@@ -1,0 +1,53 @@
+{
+  "id": "FLOW_LOOP_WHILE",
+  "type": "flow",
+  "name": "while 循环：sum = 1..times",
+  "params": [
+    { "name": "times", "type": "Integer" }
+  ],
+  "results": [
+    { "name": "sum", "type": "Integer" },
+    { "name": "i", "type": "Integer" }
+  ],
+  "nodes": [
+    {
+      "id": "FLOW_LOOP_WHILE_INIT",
+      "type": "event",
+      "name": "初始化 i/sum",
+      "reference": "FLOW_LOOP_WHILE_INIT",
+      "params": [
+        { "name": "times", "type": "Integer" }
+      ],
+      "results": [
+        { "name": "i", "type": "Integer" },
+        { "name": "sum", "type": "Integer" },
+        { "name": "times", "type": "Integer" }
+      ]
+    },
+    {
+      "id": "FLOW_LOOP_WHILE_NODE",
+      "type": "loop",
+      "name": "while i < times",
+      "reference": "FLOW_LOOP_BODY",
+      "loopMode": "while",
+      "condition": "i < times",
+      "maxIterations": 10000,
+      "onError": "throw",
+      "params": [
+        { "name": "i", "type": "Integer" },
+        { "name": "sum", "type": "Integer" },
+        { "name": "times", "type": "Integer" }
+      ],
+      "results": [
+        { "name": "i", "type": "Integer" },
+        { "name": "sum", "type": "Integer" },
+        { "name": "times", "type": "Integer" }
+      ]
+    }
+  ],
+  "routes": [
+    { "source": "start", "target": "FLOW_LOOP_WHILE_INIT" },
+    { "source": "FLOW_LOOP_WHILE_INIT", "target": "FLOW_LOOP_WHILE_NODE" },
+    { "source": "FLOW_LOOP_WHILE_NODE", "target": "end" }
+  ]
+}
